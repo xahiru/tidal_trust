@@ -79,7 +79,7 @@ def tidal_trust(source, sink):
 	global q
 	q.append(source)
 	depth = 1
-	max_depth = 10
+	max_depth = 1000
 	found = False
 	temp_q = []
 
@@ -87,7 +87,7 @@ def tidal_trust(source, sink):
 		nl = q.pop()
 		print(nl)
 		print("loop")
-		depth = depth + 1
+		print("current node", nl)
 
 		for n in g.neighbors(nl):
 			if n == sink:
@@ -104,14 +104,16 @@ def tidal_trust(source, sink):
 					# 		temp_q.append(n)
 
 		if not q:
-			print(temp_q)
-			q = temp_q
-			depth = depth + 1
-			temp_q = []
+			# print("temp_p",temp_q)
+			# print("depth",depth)
+			if(not found):
+				q = temp_q
+				depth = depth + 1
+				temp_q = []
 
 
 		
 
 g = get_graph(graph)
 #draw_graph(g, graph)
-tidal_trust(1,7)
+tidal_trust(1,9)
