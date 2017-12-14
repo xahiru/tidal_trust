@@ -97,10 +97,14 @@ def tidal_trust(source, sink):
 				
 			else:
 				if color[n] == 0:
-					color[n] = 0
+					color[n] = 1
 					temp_q.append(n)
+					# for t in temp_q:
+					# 	if n != t:
+					# 		temp_q.append(n)
 
 		if not q:
+			print(temp_q)
 			q = temp_q
 			depth = depth + 1
 			temp_q = []
@@ -110,4 +114,4 @@ def tidal_trust(source, sink):
 
 g = get_graph(graph)
 #draw_graph(g, graph)
-tidal_trust(1,2)
+tidal_trust(1,7)
