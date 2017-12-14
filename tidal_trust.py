@@ -1,9 +1,11 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-graph = [(1, 2),(1, 3),(1, 4),(2, 5),(2, 6),(3, 5),(3, 6),(4, 6),(5, 7),(6, 7)]
-node_max = [0,9,8,10,9,9,0]
-ratings = [9,8,10,9,8,10,10,9,8,6]
+graph = [(1, 2),(1, 3),(1, 4),(2, 5),(2, 6),(3, 5),(3, 6),(4, 6),(5, 7),(6, 7)]#,(6, 8)]
+#node_max should have an element for each unique node in the graph
+node_max = [0,9,8,10,9,9,0]#,0]
+#ratings should be of length len(graph)
+ratings = [9,8,10,9,8,10,10,9,8,6]#,0]
 q = []
 color = [0]*len(graph)
 
@@ -18,11 +20,12 @@ def get_graph(graph):
 
     # add nodes
     for node in nodes:
-    	G.add_node(node)
+    	G.add_node(node, max=node_max[node-1])
 
     # add edges
     for edge in graph:
-        G.add_edge(edge[0], edge[1])
+        G.add_edge(edge[0], edge[1], rating=ratings[graph.index(edge)])
+        # print("index ed", graph.index(edge))
 
     # draw graph
     # pos = nx.shell_layout(G)
@@ -75,45 +78,73 @@ def draw_graph(G, graph, labels=None, graph_layout='shell',
     # show graph
     plt.show()
 
+def path_flow(souce,node):
+	pass
+
 def tidal_trust(source, sink):
 	global q
+	d = [];
 	q.append(source)
 	depth = 1
 	max_depth = 1000
 	found = False
 	temp_q = []
+	scores = nx.get_edge_attributes(g, 'rating')
+
+	children = []
+	cache_rating = []
 
 	while (len(q) != 0 & depth <= max_depth):
 		nl = q.pop()
-		print(nl)
-		print("loop")
+		# print(nl)
+		# print("loop")
 		print("current node", nl)
+		
 
 		for n in g.neighbors(nl):
 			if n == sink:
+				cache_rating.append(scores[(nl,n)])
 				found = True
 				print("found")
+				# print("cache_rating", cache_rating)
 				max_depth = depth
+				flow = min(cache_rating)
+				# print("min=",flow)
+				d.append([n])
+				# children.append(sink)
 				
 			else:
 				if color[n] == 0:
 					color[n] = 1
 					temp_q.append(n)
-					# for t in temp_q:
-					# 	if n != t:
-					# 		temp_q.append(n)
+					
+				# for n2 in g.neighbors(nl):
+					# if color[n2] == 0:
+					# 	color[n2] = 1
+					# 	temp_q.append(n2)
+					# 	# for t in temp_q:
+						# 	if n2 != t:
+						# 		# d.append(t)
+						# 		children.append(n2)
 
+		print("cache_rating", cache_rating)
 		if not q:
 			# print("temp_p",temp_q)
 			# print("depth",depth)
 			if(not found):
 				q = temp_q
+				d.append(temp_q[:])
+				# print(d)
 				depth = depth + 1
 				temp_q = []
 
-
-		
+	print(d)
+	print(depth)
+	
+	while not d:
+		print(d.pop())
 
 g = get_graph(graph)
-#draw_graph(g, graph)
-tidal_trust(1,9)
+#draw_graph(g, graph,ratings)
+tidal_trust(1,7)
+
