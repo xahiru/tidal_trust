@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 
 graph = [(1, 2),(1, 3),(1, 4),(2, 5),(2, 6),(3, 5),(3, 6),(4, 6),(5, 7),(6, 7)]#,(6, 8)]
 #node_max should have an element for each unique node in the graph
-node_max = [0,9,8,10,9,9,0]#,0]
+#node_max = [0,9,8,10,9,9,0]#,0]
+# node_max = []
 #ratings should be of length len(graph)
 ratings = [9,8,10,9,8,10,10,9,8,6]#,0]
 q = []
@@ -13,14 +14,15 @@ def get_graph(graph):
 
     # extract nodes from graph
     nodes = set([n1 for n1, n2 in graph] + [n2 for n1, n2 in graph])
-
+    # node_max = [0]* len(nodes)
     # create networkx graph
     # G=nx.Graph()
     G = nx.DiGraph()
 
     # add nodes
     for node in nodes:
-    	G.add_node(node, max=node_max[node-1])
+    	# G.add_node(node, max=node_max[node-1])
+    	G.add_node(node, max=0)
 
     # add edges
     for edge in graph:
@@ -78,7 +80,11 @@ def draw_graph(G, graph, labels=None, graph_layout='shell',
     # show graph
     plt.show()
 
-def path_flow(souce,node):
+def path_flow(scores,node):
+	#get edges list
+	#from find edges ending with node
+	#return min
+
 	pass
 
 def tidal_trust(source, sink):
@@ -94,13 +100,15 @@ def tidal_trust(source, sink):
 	children = []
 	cache_rating = []
 
+
 	while (len(q) != 0 & depth <= max_depth):
 		nl = q.pop()
 		# print(nl)
-		# print("loop")
+		print("loop")
 		print("current node", nl)
+		print(q)
+		# print("========")
 		
-
 		for n in g.neighbors(nl):
 			if n == sink:
 				cache_rating.append(scores[(nl,n)])
@@ -108,6 +116,10 @@ def tidal_trust(source, sink):
 				print("found")
 				# print("cache_rating", cache_rating)
 				max_depth = depth
+				# print("found depth", depth)
+				# print("previous level", d[depth-2])
+				#get the max node leading to n
+				#the
 				flow = min(cache_rating)
 				# print("min=",flow)
 				d.append([n])
@@ -117,29 +129,41 @@ def tidal_trust(source, sink):
 				if color[n] == 0:
 					color[n] = 1
 					temp_q.append(n)
-					
-				# for n2 in g.neighbors(nl):
+					if depth >= 2:
+						print("color depth is greater than or eq ", depth)
+						print("previous level", d[depth-2])
+					#get the max node leading to n
+					#the
+				# print(">>>>>>>>>")
+
+				# print(nl,"->",n," = score:",scores[(nl,n)])
+				# print("<<<<<<<<<<<")
+				# for n2 in g.neighbors(n):
+					# print(n,"->",n2," = score:",scores[(n,n2)])
 					# if color[n2] == 0:
-					# 	color[n2] = 1
+						# color[n2] = 1
 					# 	temp_q.append(n2)
-					# 	# for t in temp_q:
+						# for t in temp_q:
 						# 	if n2 != t:
 						# 		# d.append(t)
 						# 		children.append(n2)
-
-		print("cache_rating", cache_rating)
+				# print(">>>>>>>>>")
+		# print("cache_rating", cache_rating)
 		if not q:
 			# print("temp_p",temp_q)
 			# print("depth",depth)
 			if(not found):
+				print("not found temp_q", temp_q)
 				q = temp_q
 				d.append(temp_q[:])
-				# print(d)
+				print(d)
 				depth = depth + 1
+				# print("color depth", depth)
+				# print("previous level", d[depth-2])
 				temp_q = []
 
-	print(d)
-	print(depth)
+	print("d",d)
+	print("depth",depth)
 	
 	while not d:
 		print(d.pop())
